@@ -1,5 +1,3 @@
-const std = @import("std");
-
 pub fn build(builder: *std.Build) !void {
     const target = builder.standardTargetOptions(.{});
     const optimize = builder.standardOptimizeOption(.{});
@@ -9,6 +7,8 @@ pub fn build(builder: *std.Build) !void {
     const glslang_module = builder.addModule("glslang-zig", .{
         .root_source_file = .{ .path = "src/root.zig" },
         .link_libcpp = true,
+        .link_libc = true,
+        .sanitize_c = false,
     });
 
     glslang_module.addIncludePath(glslang_dep.path(""));
@@ -76,37 +76,6 @@ pub fn build(builder: *std.Build) !void {
         },
         .flags = &[_][]const u8{},
     });
-    glslang_module.sanitize_c = false;
-
-    const lib = builder.addStaticLibrary(.{
-        .name = "glslang-zig",
-        .target = target,
-        .optimize = optimize,
-    });
-
-    lib.root_module.addImport("glslang", glslang_module);
-
-    builder.installArtifact(lib);
-
-    // const exe = builder.addExecutable(.{
-    //     .name = "glslang-zig",
-    //     .root_source_file = .{ .path = "src/main.zig" },
-    //     .target = target,
-    //     .optimize = optimize,
-    // });
-
-    // builder.installArtifact(exe);
-
-    // const run_cmd = builder.addRunArtifact(exe);
-
-    // run_cmd.step.dependOn(builder.getInstallStep());
-
-    // if (builder.args) |args| {
-    //     run_cmd.addArgs(args);
-    // }
-
-    // const run_step = builder.step("run", "Run the app");
-    // run_step.dependOn(&run_cmd.step);
 
     const lib_unit_tests = builder.addTest(.{
         .root_source_file = .{ .path = "src/root.zig" },
@@ -114,17 +83,12 @@ pub fn build(builder: *std.Build) !void {
         .optimize = optimize,
     });
 
+    lib_unit_tests.is_linking_libc = true;
+
     const run_lib_unit_tests = builder.addRunArtifact(lib_unit_tests);
-
-    const exe_unit_tests = builder.addTest(.{
-        .root_source_file = .{ .path = "src/main.zig" },
-        .target = target,
-        .optimize = optimize,
-    });
-
-    const run_exe_unit_tests = builder.addRunArtifact(exe_unit_tests);
 
     const test_step = builder.step("test", "Run unit tests");
     test_step.dependOn(&run_lib_unit_tests.step);
-    test_step.dependOn(&run_exe_unit_tests.step);
 }
+
+const std = @import("std");
