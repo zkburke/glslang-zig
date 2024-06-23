@@ -5,7 +5,7 @@ pub fn build(builder: *std.Build) !void {
     const glslang_dep = builder.dependency("glslang", .{});
 
     const glslang_module = builder.addModule("glslang-zig", .{
-        .root_source_file = .{ .path = "src/root.zig" },
+        .root_source_file = builder.path("src/root.zig"),
         .link_libcpp = true,
         .link_libc = true,
         .sanitize_c = false,
@@ -78,7 +78,7 @@ pub fn build(builder: *std.Build) !void {
     });
 
     const lib_unit_tests = builder.addTest(.{
-        .root_source_file = .{ .path = "src/root.zig" },
+        .root_source_file = builder.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
     });
