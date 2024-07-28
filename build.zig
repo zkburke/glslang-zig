@@ -11,7 +11,16 @@ pub fn build(builder: *std.Build) !void {
         .sanitize_c = false,
     });
 
+    const c_interface = builder.addTranslateC(.{
+        .root_source_file = glslang_dep.path("glslang/Include/glslang_c_interface.h"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    _ = c_interface.addModule("c_interface");
+
     glslang_module.addIncludePath(glslang_dep.path(""));
+    glslang_module.addIncludePath(builder.path("src/"));
     glslang_module.addCSourceFiles(.{
         .root = glslang_dep.path(""),
         .files = &[_][]const u8{
