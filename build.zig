@@ -5,6 +5,8 @@ pub fn build(builder: *std.Build) !void {
     const glslang_dep = builder.dependency("glslang", .{});
 
     const glslang_module = builder.addModule("glslang-zig", .{
+        .target = target,
+        .optimize = optimize,
         .root_source_file = builder.path("src/root.zig"),
         .link_libcpp = true,
         .link_libc = true,
@@ -17,7 +19,7 @@ pub fn build(builder: *std.Build) !void {
         .optimize = optimize,
     });
 
-    _ = c_interface.addModule("c_interface");
+    glslang_module.addImport("c_interface", c_interface.createModule());
 
     glslang_module.addIncludePath(glslang_dep.path(""));
     glslang_module.addIncludePath(builder.path("src/"));
@@ -87,7 +89,7 @@ pub fn build(builder: *std.Build) !void {
     });
 
     const lib_unit_tests = builder.addTest(.{
-        .root_source_file = builder.path("src/root.zig"),
+        .root_module = glslang_module,
         .target = target,
         .optimize = optimize,
     });

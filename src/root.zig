@@ -105,9 +105,7 @@ inline fn shaderInputToCStruct(
     };
 }
 
-const glslang_c = @cImport(
-    @cInclude("glslang/Include/glslang_c_interface.h"),
-);
+const glslang_c = @import("c_interface");
 
 ///Not specified by glslang_c_interface.h
 extern fn glslang_default_resource() callconv(.C) *const glslang_c.glslang_resource_t;

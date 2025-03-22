@@ -1,5 +1,6 @@
 .{
-    .name = "glslang-zig",
+    .name = .glslang_zig,
+    .fingerprint = 0xe15c80c4f706f57,
     .version = "0.0.0",
     .minimum_zig_version = "0.12.0",
     .dependencies = .{
