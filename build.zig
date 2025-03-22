@@ -19,7 +19,7 @@ pub fn build(builder: *std.Build) !void {
         .optimize = optimize,
     });
 
-    const c_interface_module = c_interface.addModule("interface");
+    const c_interface_module = c_interface.addModule("c_interface");
 
     glslang_module.addImport("c_interface", c_interface_module);
 
