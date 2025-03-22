@@ -19,7 +19,9 @@ pub fn build(builder: *std.Build) !void {
         .optimize = optimize,
     });
 
-    glslang_module.addImport("c_interface", c_interface.createModule());
+    const c_interface_module = c_interface.addModule("interface");
+
+    glslang_module.addImport("c_interface", c_interface_module);
 
     glslang_module.addIncludePath(glslang_dep.path(""));
     glslang_module.addIncludePath(builder.path("src/"));
